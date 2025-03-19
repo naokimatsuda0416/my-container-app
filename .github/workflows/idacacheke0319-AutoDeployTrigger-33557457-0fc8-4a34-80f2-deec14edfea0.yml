@@ -1,0 +1,44 @@
+name: Trigger auto deployment for idacacheke0319
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ main ]
+    paths:
+    - '**'
+    - '.github/workflows/idacacheke0319-AutoDeployTrigger-33557457-0fc8-4a34-80f2-deec14edfea0.yml'
+
+  # Allow manual trigger 
+  workflow_dispatch:
+      
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.IDACACHEKE0319_AZURE_CREDENTIALS }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          appSourcePath: ${{ github.workspace }}/dockerfile
+          _dockerfilePathKey_: _dockerfilePath_
+          registryUrl: https://portal.azure.com/#@MngEnvMCAP748964.onmicrosoft.com/resource/subscriptions/837d3af7-8d21-4b6d-8a71-afb0c20b9cfc/resourceGroups/v-nmatsuda-westjapan-rg/providers/Microsoft.ContainerRegistry/registries/managedidcheckacr0319/overview
+          registryUsername: ${{ secrets.IDACACHEKE0319_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.IDACACHEKE0319_REGISTRY_PASSWORD }}
+          containerAppName: idacacheke0319
+          resourceGroup: v-nmatsuda-westjapan-rg
+          imageToBuild: https://portal.azure.com/#@MngEnvMCAP748964.onmicrosoft.com/resource/subscriptions/837d3af7-8d21-4b6d-8a71-afb0c20b9cfc/resourceGroups/v-nmatsuda-westjapan-rg/providers/Microsoft.ContainerRegistry/registries/managedidcheckacr0319/overview/idacacheke0319:${{ github.sha }}
+          
+            
+
+     
+
